@@ -1,90 +1,137 @@
-# Pokédex — Projeto de Faculdade
+# Pokédex — Projeto Acadêmico
 
-Projeto full stack: **React + TypeScript** (front), **Laravel** (back), **MySQL** (banco), tudo orquestrado com **Docker**.
+Aplicação full stack desenvolvida como projeto de faculdade, composta por front-end em **React/TypeScript**, back-end em **Laravel** e banco de dados **MySQL**, com toda a infraestrutura orquestrada via **Docker**.
 
-Funcionalidade implementada até aqui: **Pokédex pública** (sem login) — lista, busca por nome, filtro por tipo, paginação e página de detalhe de cada pokémon, com os dados sincronizados da [PokéAPI](https://pokeapi.co) para o nosso próprio banco MySQL.
+## Tecnologias Utilizadas
 
-Próximas funcionalidades planejadas: login/cadastro de usuário (Sanctum) e montador de time (Team Builder).
+### Front-end
+
+| Tecnologia | Finalidade |
+|---|---|
+| React 19 + TypeScript | Biblioteca de interface e tipagem estática |
+| Vite | Bundler e servidor de desenvolvimento |
+| MUI (Material UI) v6 + Emotion | Biblioteca de componentes de interface |
+| Zustand | Gerenciamento de estado global (sessão de autenticação) |
+| React Router v7 | Roteamento client-side |
+| Axios | Cliente HTTP |
+
+### Back-end
+
+| Tecnologia | Finalidade |
+|---|---|
+| Laravel 12 | Framework da API REST |
+| PHP 8.3 | Linguagem de execução |
+| Autenticação via token | Implementação própria, análoga ao Laravel Sanctum, sem dependência externa |
+
+### Banco de Dados
+
+| Tecnologia | Finalidade |
+|---|---|
+| MySQL 8.4 | Persistência dos dados da aplicação |
+
+### Infraestrutura
+
+| Tecnologia | Finalidade |
+|---|---|
+| Docker / Docker Compose | Containerização e orquestração dos serviços |
+| Nginx | Servidor web front-end da API (proxy para PHP-FPM) |
+| phpMyAdmin | Interface administrativa do banco de dados |
 
 ## Arquitetura
 
 ```
-projeto-faculdade/
-├── back/                  # API Laravel
-│   ├── app/Services/PokeApiService.php     # consome a PokéAPI
-│   ├── app/Console/Commands/SyncPokedex.php # sincroniza PokéAPI -> MySQL
-│   ├── app/Http/Controllers/Api/PokemonController.php
-│   └── ...
-├── front/                 # React + TypeScript + Tailwind
-│   └── src/
-│       ├── api/           # cliente axios + chamadas à API do back
-│       ├── pages/          # Pokedex, PokemonDetail
-│       └── components/
+pokedex-projeto/
+├── back/                 # API Laravel
+├── front/                # React + TypeScript + MUI
 ├── docker/
 │   └── nginx/default.conf
 ├── docker-compose.yml
-└── .env / .env.example     # variáveis do docker-compose (banco)
+└── .env / .env.example   # credenciais do banco utilizadas pelo docker-compose
 ```
 
-O front **nunca** chama a PokéAPI diretamente. Ele chama a nossa própria API Laravel (`/api/pokemons`), que lê do MySQL. Quem fala com a PokéAPI é só o backend, através do comando de sincronização (`pokedex:sync`) — isso evita bater o rate limit da API externa toda vez que alguém acessa a Pokédex, e é o motivo de existir uma tabela `pokemons` no nosso banco.
+O front-end não realiza chamadas diretas a APIs externas. Toda comunicação ocorre exclusivamente com a API Laravel (`/api/...`), que consulta o banco MySQL local.
 
 ## Pré-requisitos
 
-- Docker Desktop instalado e rodando (com virtualização habilitada no Windows/BIOS).
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e em execução (no Windows, com virtualização e WSL2 habilitados).
 
-Não precisa ter PHP, Composer, Node nem MySQL instalados na máquina — tudo roda dentro dos containers.
+Não é necessária a instalação local de PHP, Composer, Node.js ou MySQL — todas as dependências são resolvidas dentro dos containers.
 
-## Como rodar
+## Instalação e Execução
 
-1. Na raiz do projeto, confirme que existe o arquivo `.env` (se não existir, copie `.env.example` para `.env` — ele só tem as credenciais do MySQL usadas pelo docker-compose).
+### Primeira execução
 
-2. Dentro de `back/`, confirme que existe o arquivo `.env` (se não existir, copie `back/.env.example` para `back/.env`). Gere uma `APP_KEY` nova se for zerar o projeto:
-   ```
-   docker compose run --rm app php artisan key:generate
-   ```
+1. Clonar o repositório e acessar o diretório raiz do projeto.
 
-3. Suba os containers (a primeira vez demora um pouco: baixa as imagens, instala as dependências do PHP e do Node):
+2. No diretório raiz, criar o arquivo `.env` a partir de `.env.example`, caso não exista. Este arquivo contém as credenciais do MySQL utilizadas pelo `docker-compose.yml`.
+
+3. No diretório `back/`, criar o arquivo `.env` a partir de `back/.env.example`, mantendo as credenciais de banco consistentes com o `.env` da raiz.
+
+4. No diretório `front/`, criar o arquivo `.env` a partir de `front/.env.example`.
+
+5. Construir e iniciar os containers:
    ```
    docker compose up --build
    ```
 
-   Isso sobe:
-   - `app` — PHP-FPM rodando o Laravel
-   - `nginx` — serve a API em **http://localhost:8000**
-   - `mysql` — banco de dados na porta 3306
-   - `front` — servidor de desenvolvimento do Vite em **http://localhost:5173**
-   - `phpmyadmin` — interface web pro banco em **http://localhost:8080** (login: `root` / senha definida em `.env`)
+   Esse comando inicializa os seguintes serviços:
 
-   As migrations rodam automaticamente toda vez que o container `app` sobe.
+   | Serviço | Descrição | Endereço |
+   |---|---|---|
+   | `app` | PHP-FPM executando a aplicação Laravel | — |
+   | `nginx` | Servidor web da API | http://localhost:8000 |
+   | `mysql` | Banco de dados | localhost:3306 |
+   | `front` | Servidor de desenvolvimento Vite | http://localhost:5173 |
+   | `phpmyadmin` | Interface administrativa do banco | http://localhost:8080 |
 
-4. Popule a Pokédex (só precisa rodar uma vez; demora ~1 min para os 151 pokémons da geração 1, porque bate na PokéAPI um por um):
-   ```
-   docker compose exec app php artisan pokedex:sync
-   ```
-   Para sincronizar mais pokémons: `docker compose exec app php artisan pokedex:sync --limit=251` (vai até a geração 2), etc.
+   As migrations do banco de dados são executadas automaticamente na inicialização do container `app`.
 
-5. Acesse **http://localhost:5173** — a Pokédex já deve estar funcionando.
+6. Popular a base de dados. Existem duas formas:
 
-## Comandos úteis
+   - **Sincronizando com a PokéAPI** (execução única; pode levar alguns minutos):
+     ```
+     docker compose exec app php artisan pokedex:sync --from=1 --limit=898
+     ```
+     O parâmetro `--limit` define o número de registros sincronizados. Para uma execução mais rápida, restrita à primeira geração, utilizar `--limit=151`.
+
+   - **Restaurando o dump incluído no repositório** (`back/database/dump.sql`), mais rápido por não depender da PokéAPI:
+     ```
+     docker compose exec -T mysql mysql -u root -p pokedex < back/database/dump.sql
+     ```
+     O comando solicita a senha definida em `DB_ROOT_PASSWORD` no `.env` da raiz.
+
+7. Acessar a aplicação em **http://localhost:5173**.
+
+### Execuções subsequentes
 
 ```
-docker compose down                          # para os containers
-docker compose exec app php artisan migrate  # roda migrations manualmente
-docker compose exec app bash                 # abre um shell no container do Laravel
-docker compose logs -f app                    # acompanha os logs do backend
+docker compose up -d
 ```
 
-## API
+## Variáveis de Ambiente
 
-| Método | Rota                  | Descrição                                      |
-|--------|-----------------------|--------------------------------------------------|
-| GET    | `/api/pokemons`       | Lista paginada. Query params: `search`, `type`, `page` |
-| GET    | `/api/pokemons/{id}`  | Detalhe de um pokémon                            |
-| GET    | `/api/types`          | Tipos distintos disponíveis (para o filtro)      |
+| Arquivo | Variáveis relevantes |
+|---|---|
+| `.env` (raiz) | `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_ROOT_PASSWORD` |
+| `back/.env` | Configuração padrão do Laravel, incluindo `APP_KEY` e credenciais de banco consistentes com o `.env` da raiz |
+| `front/.env` | `VITE_API_URL`, apontando para o endereço público da API (`http://localhost:8000/api` por padrão) |
 
-## Stack
+## Comandos Úteis
 
-- **Front:** React 19, TypeScript, Vite, Tailwind CSS v4, React Router, Axios
-- **Back:** Laravel 12, PHP 8.3
-- **Banco:** MySQL 8.4
-- **Infra:** Docker + docker-compose (nginx como servidor web na frente do PHP-FPM)
+```
+docker compose down                              # encerra os containers
+docker compose exec app php artisan migrate      # executa migrations manualmente
+docker compose exec app php artisan migrate:status
+docker compose exec app bash                     # abre um shell no container da aplicação
+docker compose exec front npm install            # reinstala dependências do front-end
+docker compose logs -f app                        # acompanha os logs do back-end
+```
+
+## Observação
+
+O diretório `node_modules` do container `front` é mantido em um volume Docker nomeado, que não é atualizado automaticamente após alterações no `package.json`. Após a inclusão de uma nova dependência, é necessário executar:
+
+```
+docker compose exec front npm install
+docker compose restart front
+```

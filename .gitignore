@@ -1,0 +1,43 @@
+# Variáveis de ambiente — contêm credenciais de banco de dados e
+# outras configurações locais; nunca devem ser versionadas.
+.env
+.env.backup
+.env.production
+.env.*.local
+
+# Dependências instaladas dentro dos containers (Composer/npm).
+# Já existem .gitignore próprios em back/ e front/ cobrindo isso;
+# as entradas abaixo são redundância proposital.
+/back/vendor
+/front/node_modules
+
+# Build/artefatos gerados
+/front/dist
+/front/dist-ssr
+/back/public/build
+/back/public/hot
+/back/public/storage
+/back/storage/*.key
+/back/storage/pail
+/back/bootstrap/cache/*.php
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editores e IDEs
+.vscode/*
+!.vscode/extensions.json
+.idea
+.fleet
+.nova
+.zed
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Backups locais
+*.bak
