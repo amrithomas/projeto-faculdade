@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+# Se o vendor/ ainda não existir no volume nomeado (primeira vez), instala.
+if [ ! -f vendor/autoload.php ]; then
+    composer install --no-interaction --prefer-dist --optimize-autoloader
+fi
+
+# Roda as migrations automaticamente a cada subida do container (idempotente).
+php artisan migrate --force
+
+exec "$@"
