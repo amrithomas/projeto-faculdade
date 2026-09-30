@@ -8,6 +8,8 @@ import { PokemonDetail } from './pages/PokemonDetail';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
+import { Teams } from './pages/Teams';
+import { TeamBuilder } from './pages/TeamBuilder';
 import { AuthMenu } from './components/AuthMenu';
 
 function App() {
@@ -40,6 +42,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/teams" element={<Teams />} />
+        <Route path="/teams/new" element={<TeamBuilder />} />
+        <Route path="/teams/:id" element={<TeamBuilder />} />
       </Routes>
     </Box>
   );

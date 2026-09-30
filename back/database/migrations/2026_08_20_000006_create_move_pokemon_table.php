@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Por enquanto só sincronizamos golpes aprendidos por level-up (é o que
-     * a tela de detalhes precisa), por isso a chave única é só
-     * pokemon+move — não há mais de uma linha por golpe aprendido.
+     * Guardamos um único método de aprendizado por golpe (level-up tem
+     * prioridade, ver PokeApiService::fetchPokemon()), por isso a chave
+     * única é só pokemon+move — não há mais de uma linha por golpe.
      */
     public function up(): void
     {

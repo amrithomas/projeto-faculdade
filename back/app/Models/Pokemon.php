@@ -24,6 +24,8 @@ class Pokemon extends Model
         'description',
         'genus',
         'gender_rate',
+        'is_legendary',
+        'is_mythical',
         'height',
         'weight',
         'stats',
@@ -34,7 +36,18 @@ class Pokemon extends Model
         'stats' => 'array',
         'height' => 'float',
         'weight' => 'float',
+        'is_legendary' => 'boolean',
+        'is_mythical' => 'boolean',
     ];
+
+    /**
+     * Restrito no VGC (lendário de capa/caixa). Não vem da PokeAPI — é a
+     * lista fixa de config/vgc.php.
+     */
+    public function isRestricted(): bool
+    {
+        return in_array($this->pokedex_number, config('vgc.restricted'), true);
+    }
 
     public function abilities(): BelongsToMany
     {

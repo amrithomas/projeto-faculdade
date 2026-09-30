@@ -84,6 +84,8 @@ class SyncPokedex extends Command
                     'description' => $species['description'] ?? null,
                     'genus' => $species['genus'] ?? null,
                     'gender_rate' => $species['gender_rate'] ?? null,
+                    'is_legendary' => $species['is_legendary'] ?? false,
+                    'is_mythical' => $species['is_mythical'] ?? false,
                     'height' => $data['height'],
                     'weight' => $data['weight'],
                     'stats' => $data['stats'],
@@ -244,7 +246,7 @@ class SyncPokedex extends Command
             $move = $this->moveCache[$pokeapiId];
             $sync[$move->id] = [
                 'level' => $moveData['level'],
-                'learn_method' => 'level-up',
+                'learn_method' => $moveData['learn_method'],
             ];
         }
 

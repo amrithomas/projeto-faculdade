@@ -100,7 +100,28 @@ Não é necessária a instalação local de PHP, Composer, Node.js ou MySQL — 
      ```
      O comando solicita a senha definida em `DB_ROOT_PASSWORD` no `.env` da raiz.
 
-7. Acessar a aplicação em **http://localhost:5173**.
+7. Sincronizar os itens seguráveis (usados no montador de times):
+   ```
+   docker compose exec app php artisan pokedex:sync-items
+   ```
+
+8. Acessar a aplicação em **http://localhost:5173**.
+
+## Montagem de Times (VGC)
+
+Usuários logados podem montar times em **Meus times** (menu do usuário), seguindo as regras do VGC 2026 (Pokémon Champions):
+
+- Time com até 6 pokémons (com menos de 6 fica salvo como rascunho); nas batalhas em duplas, 4 são escolhidos.
+- Todos os pokémons ficam no nível 50.
+- **Species Clause**: sem dois pokémons com o mesmo número na dex nacional.
+- **Item Clause**: nenhum item repetido.
+- Sem IVs (todos fixos em 31). Os EVs são substituídos por **Stat Points**: 66 no total, no máximo 32 por stat.
+- Cada membro tem habilidade, natureza, item opcional e de 1 a 4 golpes que o pokémon consegue aprender.
+- No máximo **2 lendários restritos** (de capa: Mewtwo, Kyogre, Calyrex...) por time. Míticos são proibidos; os demais lendários contam como pokémons comuns.
+
+As regras ficam em `back/config/vgc.php` (limite de restritos, lista de restritos, banidos, naturezas) e são validadas no back-end por `App\Services\VgcTeamValidator`. O front lê as mesmas regras em `GET /api/vgc/rules`.
+
+> **Bases criadas antes desta funcionalidade** precisam rodar `pokedex:sync` de novo (para trazer todos os golpes aprendíveis, e não só os de level-up, além das flags de lendário/mítico) e `pokedex:sync-items`. O `dump.sql` do repositório ainda não tem esses dados.
 
 ### Execuções subsequentes
 

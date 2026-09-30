@@ -59,13 +59,50 @@ class PokemonController extends Controller
         // A linha evolutiva completa (Pokemon::evolutionFamily()) anda pela
         // relação preEvolution/evolutions sozinha, então só precisamos dar
         // eager load do que o resource acessa direto no próprio pokémon.
-        $pokemon->load(['abilities', 'moves']);
+        // A tela de detalhes só mostra golpes de level-up; a lista completa
+        // (TM, tutor, egg...) fica em learnset(), usado no montador de times.
+        $pokemon->load([
+            'abilities',
+            'moves' => fn ($q) => $q->wherePivot('learn_method', 'level-up'),
+        ]);
 
         if ($user = $request->user()) {
             $pokemon->load(['favoritedBy' => fn ($q) => $q->where('users.id', $user->id)]);
         }
 
         return new PokemonDetailResource($pokemon);
+    }
+
+    /**
+     * GET /api/pokemons/{pokemon}/learnset
+     * Tudo que dá pra escolher pra esse pokémon ao montar um time: as
+     * habilidades e todos os golpes aprendíveis (não só os de level-up).
+     */
+    public function learnset(Pokemon $pokemon): JsonResponse
+    {
+        $pokemon->load('abilities');
+
+        $moves = $pokemon->moves()->reorder()->orderBy('moves.name')->get();
+
+        return response()->json(['data' => [
+            'abilities' => $pokemon->abilities->map(fn ($ability) => [
+                'id' => $ability->id,
+                'name' => $ability->name,
+                'description' => $ability->description,
+                'is_hidden' => (bool) $ability->pivot->is_hidden,
+            ])->values(),
+            'moves' => $moves->map(fn ($move) => [
+                'id' => $move->id,
+                'name' => $move->name,
+                'type' => $move->type,
+                'damage_class' => $move->damage_class,
+                'power' => $move->power,
+                'accuracy' => $move->accuracy,
+                'pp' => $move->pp,
+                'description' => $move->description,
+                'learn_method' => $move->pivot->learn_method,
+            ])->values(),
+        ]]);
     }
 
     /**

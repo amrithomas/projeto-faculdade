@@ -28,6 +28,9 @@ class PokemonResource extends JsonResource
             'height' => $this->height,
             'weight' => $this->weight,
             'stats' => $this->stats,
+            'is_legendary' => (bool) $this->is_legendary,
+            'is_mythical' => (bool) $this->is_mythical,
+            'is_restricted' => $this->isRestricted(),
             'is_favorited' => $this->relationLoaded('favoritedBy') && $this->favoritedBy->isNotEmpty(),
         ];
     }

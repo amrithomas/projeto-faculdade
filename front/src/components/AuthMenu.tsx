@@ -9,6 +9,7 @@ import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
+import GroupsIcon from '@mui/icons-material/Groups';
 import { useAuthStore } from '../store/authStore';
 import { logoutUser } from '../api/auth';
 
@@ -68,6 +69,12 @@ export function AuthMenu() {
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           Meu perfil
+        </MenuItem>
+        <MenuItem component={Link} to="/teams" onClick={() => setAnchorEl(null)}>
+          <ListItemIcon>
+            <GroupsIcon fontSize="small" />
+          </ListItemIcon>
+          Meus times
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleLogout}>

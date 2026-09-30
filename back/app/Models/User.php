@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Pokemon::class, 'favorite_pokemon')->withTimestamps();
     }
+
+    public function teams(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Team::class);
+    }
 }

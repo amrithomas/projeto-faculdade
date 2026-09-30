@@ -15,6 +15,10 @@ export interface PokemonSummary {
   height: number | null;
   weight: number | null;
   stats: PokemonStat[];
+  is_legendary: boolean;
+  is_mythical: boolean;
+  // Restrito no VGC (lendário de capa), ver config/vgc.php no back.
+  is_restricted: boolean;
   is_favorited: boolean;
 }
 

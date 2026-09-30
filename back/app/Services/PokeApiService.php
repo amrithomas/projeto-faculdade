@@ -54,27 +54,41 @@ class PokeApiService
                 ])
                 ->values()
                 ->all(),
-            // Só pegamos golpes aprendidos por level-up (é o que a tela de
-            // detalhes mostra). Quando o mesmo golpe aparece em vários jogos
-            // com níveis diferentes, ficamos com a primeira ocorrência —
-            // simplificação razoável pra esse projeto.
+            // Todos os golpes que o pokémon consegue aprender (level-up, TM,
+            // tutor, egg move...) — o montador de times precisa da lista
+            // completa. Guardamos um método só por golpe: level-up tem
+            // prioridade (é o que a tela de detalhes mostra, com o nível);
+            // senão fica o primeiro método que aparecer. Quando o mesmo
+            // golpe aparece em vários jogos com níveis diferentes, ficamos
+            // com a primeira ocorrência — simplificação razoável pra esse
+            // projeto.
             'moves' => collect($response['moves'])
                 ->map(function (array $m) {
-                    $levelUp = collect($m['version_group_details'])
-                        ->first(fn (array $vgd) => $vgd['move_learn_method']['name'] === 'level-up'
-                            && $vgd['level_learned_at'] > 0);
+                    $details = collect($m['version_group_details']);
 
-                    if ($levelUp === null) {
-                        return null;
+                    $levelUp = $details->first(fn (array $vgd) => $vgd['move_learn_method']['name'] === 'level-up'
+                        && $vgd['level_learned_at'] > 0);
+
+                    if ($levelUp !== null) {
+                        return [
+                            'name' => $m['move']['name'],
+                            'url' => $m['move']['url'],
+                            'level' => $levelUp['level_learned_at'],
+                            'learn_method' => 'level-up',
+                        ];
                     }
+
+                    // Level-up com nível 0 = golpe aprendido ao evoluir /
+                    // pelo move reminder; não tem nível pra mostrar.
+                    $method = $details->first()['move_learn_method']['name'] ?? 'other';
 
                     return [
                         'name' => $m['move']['name'],
                         'url' => $m['move']['url'],
-                        'level' => $levelUp['level_learned_at'],
+                        'level' => null,
+                        'learn_method' => $method === 'level-up' ? 'reminder' : $method,
                     ];
                 })
-                ->filter()
                 ->values()
                 ->all(),
         ];
@@ -113,6 +127,50 @@ class PokeApiService
             'description' => $description,
             'genus' => $genusEntry['genus'] ?? null,
             'gender_rate' => $response['gender_rate'] ?? null,
+            'is_legendary' => (bool) ($response['is_legendary'] ?? false),
+            'is_mythical' => (bool) ($response['is_mythical'] ?? false),
+        ];
+    }
+
+    /**
+     * Lista os nomes dos itens de uma categoria (ex: "choice", "held-items").
+     *
+     * @return string[]|null
+     */
+    public function fetchItemCategory(string $name): ?array
+    {
+        $response = $this->get("/item-category/{$name}");
+
+        if ($response === null) {
+            return null;
+        }
+
+        return collect($response['items'] ?? [])->pluck('name')->values()->all();
+    }
+
+    public function fetchItem(string $name): ?array
+    {
+        $response = $this->get("/item/{$name}");
+
+        if ($response === null) {
+            return null;
+        }
+
+        $entry = collect($response['effect_entries'] ?? [])
+            ->first(fn (array $e) => $e['language']['name'] === 'en');
+
+        $description = $entry['short_effect'] ?? $entry['effect'] ?? null;
+
+        if ($description) {
+            $description = trim(preg_replace('/[\n\f\r]+/', ' ', $description));
+        }
+
+        return [
+            'pokeapi_id' => $response['id'],
+            'name' => $response['name'],
+            'category' => $response['category']['name'] ?? 'other',
+            'sprite_url' => $response['sprites']['default'] ?? null,
+            'description' => $description,
         ];
     }
 
