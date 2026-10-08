@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Item;
 use App\Models\Pokemon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,7 @@ class VgcTeamValidator
         foreach ($members as $i => $member) {
             $pokemon = $pokemons->get($member['pokemon_id']);
 
+            $this->checkMegaStone($i, $member, $pokemon, $errors);
             $this->checkAbility($i, $member, $pokemon, $errors);
             $this->checkMoves($i, $member, $pokemon, $errors);
             $this->checkStatPoints($i, $member, $errors);
@@ -122,6 +124,24 @@ class VgcTeamValidator
             } elseif ($pokemon->is_mythical && ! config('vgc.allow_mythical')) {
                 $errors[$field][] = 'Pokémons míticos não são permitidos na regulation atual.';
             }
+        }
+    }
+
+    /**
+     * Uma mega só entra no time segurando a sua pedra (config vgc.mega_stones).
+     */
+    private function checkMegaStone(int $i, array $member, ?Pokemon $pokemon, array &$errors): void
+    {
+        $stone = $pokemon ? config("vgc.mega_stones.{$pokemon->name}") : null;
+
+        if ($stone === null) {
+            return;
+        }
+
+        $itemName = Item::find($member['item_id'] ?? null)?->name;
+
+        if ($itemName !== $stone) {
+            $errors["members.{$i}.item_id"][] = 'Esta megaevolução precisa segurar a '.str_replace('-', ' ', $stone).'.';
         }
     }
 

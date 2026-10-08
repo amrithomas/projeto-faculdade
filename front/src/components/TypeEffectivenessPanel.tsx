@@ -4,10 +4,6 @@ import Stack from '@mui/material/Stack';
 import type { TypeEffectiveness } from '../types/pokemon';
 import { TypeBadge } from './TypeBadge';
 
-function formatMultiplier(multiplier: number): string {
-  return `x${multiplier % 1 === 0 ? multiplier : multiplier.toFixed(2)}`;
-}
-
 export function TypeEffectivenessPanel({ effectiveness }: { effectiveness: TypeEffectiveness }) {
   const weak = Object.entries(effectiveness.weak_against).sort((a, b) => b[1] - a[1]);
   const resistant = Object.entries(effectiveness.resistant_to).sort((a, b) => a[1] - b[1]);
@@ -29,11 +25,8 @@ export function TypeEffectivenessPanel({ effectiveness }: { effectiveness: TypeE
             Recebe mais dano de
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap mt={0.5}>
-            {weak.map(([type, multiplier]) => (
-              <Stack key={type} direction="row" spacing={0.5} alignItems="center">
-                <TypeBadge type={type} />
-
-              </Stack>
+            {weak.map(([type]) => (
+              <TypeBadge key={type} type={type} />
             ))}
           </Stack>
         </Box>
@@ -45,10 +38,8 @@ export function TypeEffectivenessPanel({ effectiveness }: { effectiveness: TypeE
             Recebe menos dano de
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap mt={0.5}>
-            {resistant.map(([type, multiplier]) => (
-              <Stack key={type} direction="row" spacing={0.5} alignItems="center">
-                <TypeBadge type={type} />
-              </Stack>
+            {resistant.map(([type]) => (
+              <TypeBadge key={type} type={type} />
             ))}
           </Stack>
         </Box>

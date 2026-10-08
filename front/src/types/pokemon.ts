@@ -6,6 +6,8 @@ export interface PokemonStat {
 export interface PokemonSummary {
   id: number;
   pokedex_number: number;
+  // Preenchido só em megaevoluções: id da forma base.
+  base_pokemon_id: number | null;
   generation: number | null;
   region: string | null;
   regional_dex_number: number | null;
@@ -65,6 +67,8 @@ export interface PokemonDetail extends PokemonSummary {
   type_effectiveness: TypeEffectiveness;
   abilities: Ability[];
   moves: PokemonMove[];
+  // Forma base + megas da espécie (vazio se não tem mega).
+  forms: EvolutionStagePokemon[];
   // Linha evolutiva completa, agrupada por estágio (do básico até as
   // evoluções finais) — não só o elo anterior/seguinte a este pokémon.
   evolution_family: EvolutionStagePokemon[][];

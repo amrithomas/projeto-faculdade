@@ -31,7 +31,7 @@ export function AuthMenu() {
         <Button component={Link} to="/login" color="inherit">
           Entrar
         </Button>
-        <Button component={Link} to="/register" variant="contained" disableElevation>
+        <Button component={Link} to="/register" variant="contained" color="secondary" disableElevation>
           Cadastrar
         </Button>
       </Stack>
@@ -58,7 +58,7 @@ export function AuthMenu() {
         color="inherit"
         sx={{ textTransform: 'none', gap: 1 }}
       >
-        <Avatar sx={{ width: 28, height: 28, bgcolor: 'primary.main', fontSize: 14 }}>
+        <Avatar sx={{ width: 28, height: 28, bgcolor: 'secondary.main', color: 'text.primary', fontSize: 14 }}>
           {user.username[0]?.toUpperCase()}
         </Avatar>
         {user.username}

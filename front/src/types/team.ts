@@ -23,7 +23,14 @@ export interface VgcRules {
   restricted: number[];
   banned: number[];
   natures: Record<string, Nature>;
+  // Nome da mega => nome da pedra que ela obrigatoriamente segura.
+  mega_stones: Record<string, string>;
   stats: StatName[];
+  // Tipo defensor => tipos atacantes que causam x2 / x0.5 / x0 nele.
+  type_chart: Record<
+    string,
+    { double_damage_from: string[]; half_damage_from: string[]; no_damage_from: string[] }
+  >;
 }
 
 export interface Item {

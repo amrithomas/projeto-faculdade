@@ -13,8 +13,9 @@ class SyncPokedex extends Command
 {
     /**
      * php artisan pokedex:sync                        -> sincroniza os 151 primeiros (Gen 1)
-     * php artisan pokedex:sync --from=1 --limit=898    -> sincroniza da Gen 1 até a Gen 8
+     * php artisan pokedex:sync --from=1 --limit=1025   -> sincroniza da Gen 1 até a Gen 9
      * php artisan pokedex:sync --from=152 --limit=100  -> só a Gen 2
+     * php artisan pokedex:sync --from=899 --limit=127  -> só Hisui + Gen 9
      */
     protected $signature = 'pokedex:sync {--from=1} {--limit=151}';
 
@@ -29,16 +30,21 @@ class SyncPokedex extends Command
      * jogos, aqui só guardamos o número dele na dex regional da sua própria
      * geração (a "casa" original dele) — não em todas as dexes onde ele
      * aparece.
+     *
+     * Hisui (Legends: Arceus) também é Gen 8, por isso a geração é um campo
+     * e não a chave.
      */
     private const REGIONS = [
-        1 => ['name' => 'Kanto', 'dex' => 'kanto', 'range' => [1, 151]],
-        2 => ['name' => 'Johto', 'dex' => 'updated-johto', 'range' => [152, 251]],
-        3 => ['name' => 'Hoenn', 'dex' => 'hoenn', 'range' => [252, 386]],
-        4 => ['name' => 'Sinnoh', 'dex' => 'extended-sinnoh', 'range' => [387, 493]],
-        5 => ['name' => 'Unova', 'dex' => 'updated-unova', 'range' => [494, 649]],
-        6 => ['name' => 'Kalos', 'dex' => ['kalos-central', 'kalos-coastal', 'kalos-mountain'], 'range' => [650, 721]],
-        7 => ['name' => 'Alola', 'dex' => 'updated-alola', 'range' => [722, 809]],
-        8 => ['name' => 'Galar', 'dex' => 'galar', 'range' => [810, 898]],
+        ['generation' => 1, 'name' => 'Kanto', 'dex' => 'kanto', 'range' => [1, 151]],
+        ['generation' => 2, 'name' => 'Johto', 'dex' => 'updated-johto', 'range' => [152, 251]],
+        ['generation' => 3, 'name' => 'Hoenn', 'dex' => 'hoenn', 'range' => [252, 386]],
+        ['generation' => 4, 'name' => 'Sinnoh', 'dex' => 'extended-sinnoh', 'range' => [387, 493]],
+        ['generation' => 5, 'name' => 'Unova', 'dex' => 'updated-unova', 'range' => [494, 649]],
+        ['generation' => 6, 'name' => 'Kalos', 'dex' => ['kalos-central', 'kalos-coastal', 'kalos-mountain'], 'range' => [650, 721]],
+        ['generation' => 7, 'name' => 'Alola', 'dex' => 'updated-alola', 'range' => [722, 809]],
+        ['generation' => 8, 'name' => 'Galar', 'dex' => 'galar', 'range' => [810, 898]],
+        ['generation' => 8, 'name' => 'Hisui', 'dex' => 'hisui', 'range' => [899, 905]],
+        ['generation' => 9, 'name' => 'Paldea', 'dex' => ['paldea', 'kitakami', 'blueberry'], 'range' => [906, 1025]],
     ];
 
     /** @var array<int, Ability> */
@@ -75,29 +81,44 @@ class SyncPokedex extends Command
             [$generation, $region] = $this->generationAndRegionFor($id);
             $species = $service->fetchSpecies($id);
 
+            // Dados da espécie, iguais pra forma base e pras megas.
+            $speciesFields = [
+                'pokedex_number' => $id,
+                'description' => $species['description'] ?? null,
+                'genus' => $species['genus'] ?? null,
+                'gender_rate' => $species['gender_rate'] ?? null,
+                'is_legendary' => $species['is_legendary'] ?? false,
+                'is_mythical' => $species['is_mythical'] ?? false,
+                'generation' => $generation,
+                'region' => $region,
+                'regional_dex_number' => $regionalNumbers[$id] ?? null,
+                'evolves_from_pokedex_number' => $species['evolves_from_pokedex_number'] ?? null,
+            ];
+
             $pokemon = Pokemon::updateOrCreate(
-                ['pokedex_number' => $data['pokedex_number']],
-                [
-                    'name' => $data['name'],
-                    'types' => $data['types'],
-                    'sprite_url' => $data['sprite_url'],
-                    'description' => $species['description'] ?? null,
-                    'genus' => $species['genus'] ?? null,
-                    'gender_rate' => $species['gender_rate'] ?? null,
-                    'is_legendary' => $species['is_legendary'] ?? false,
-                    'is_mythical' => $species['is_mythical'] ?? false,
-                    'height' => $data['height'],
-                    'weight' => $data['weight'],
-                    'stats' => $data['stats'],
-                    'generation' => $generation,
-                    'region' => $region,
-                    'regional_dex_number' => $regionalNumbers[$id] ?? null,
-                    'evolves_from_pokedex_number' => $species['evolves_from_pokedex_number'] ?? null,
-                ],
+                ['pokedex_number' => $id, 'base_pokemon_id' => null],
+                [...$speciesFields, ...$this->formFields($data)],
             );
 
             $this->syncAbilities($service, $pokemon, $data['abilities']);
             $this->syncMoves($service, $pokemon, $data['moves']);
+
+            foreach ($species['megas'] ?? [] as $megaName) {
+                $mega = $service->fetchPokemon($megaName);
+
+                if ($mega === null) {
+                    continue;
+                }
+
+                $megaPokemon = Pokemon::updateOrCreate(
+                    ['name' => $mega['name']],
+                    [...$speciesFields, ...$this->formFields($mega), 'base_pokemon_id' => $pokemon->id],
+                );
+
+                $this->syncAbilities($service, $megaPokemon, $mega['abilities']);
+                // Se a PokeAPI não listar golpes da mega, usa os da forma base.
+                $this->syncMoves($service, $megaPokemon, $mega['moves'] ?: $data['moves']);
+            }
 
             $synced++;
             $bar->advance();
@@ -110,13 +131,28 @@ class SyncPokedex extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * Campos que mudam entre a forma base e uma mega.
+     */
+    private function formFields(array $data): array
+    {
+        return [
+            'name' => $data['name'],
+            'types' => $data['types'],
+            'sprite_url' => $data['sprite_url'],
+            'height' => $data['height'],
+            'weight' => $data['weight'],
+            'stats' => $data['stats'],
+        ];
+    }
+
     private function generationAndRegionFor(int $pokedexNumber): array
     {
-        foreach (self::REGIONS as $generation => $info) {
+        foreach (self::REGIONS as $info) {
             [$min, $max] = $info['range'];
 
             if ($pokedexNumber >= $min && $pokedexNumber <= $max) {
-                return [$generation, $info['name']];
+                return [$info['generation'], $info['name']];
             }
         }
 

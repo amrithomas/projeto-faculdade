@@ -19,6 +19,7 @@ class PokemonResource extends JsonResource
         return [
             'id' => $this->id,
             'pokedex_number' => $this->pokedex_number,
+            'base_pokemon_id' => $this->base_pokemon_id,
             'generation' => $this->generation,
             'region' => $this->region,
             'regional_dex_number' => $this->regional_dex_number,

@@ -24,7 +24,19 @@ export function PokemonCard({
       : pokemon.pokedex_number;
 
   return (
-    <Card elevation={0} sx={{ height: '100%', bgcolor: 'grey.50', position: 'relative' }}>
+    <Card
+      elevation={0}
+      sx={{
+        height: '100%',
+        bgcolor: 'background.paper',
+        position: 'relative',
+        border: 1,
+        borderColor: 'grey.200',
+        transition: 'transform .2s, box-shadow .2s, border-color .2s',
+        '&:hover': { transform: 'translateY(-4px)', boxShadow: 6, borderColor: 'primary.light' },
+        '&:hover img': { animation: 'bob .8s ease-in-out infinite' },
+      }}
+    >
       <Box sx={{ position: 'absolute', top: 4, right: 4, zIndex: 1 }}>
         <FavoriteButton
           pokemonId={pokemon.id}

@@ -36,7 +36,7 @@ export function PokemonPicker({
     let cancelled = false;
     setLoading(true);
     const timer = setTimeout(() => {
-      fetchPokemons({ search: input || undefined, per_page: 24 })
+      fetchPokemons({ search: input || undefined, with_megas: true, per_page: 24 })
         .then((res) => {
           if (!cancelled) setOptions(res.data);
         })

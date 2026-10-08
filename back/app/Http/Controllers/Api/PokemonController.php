@@ -14,12 +14,18 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class PokemonController extends Controller
 {
     /**
-     * GET /api/pokemons?search=&type=&region=&generation=&per_page=&page=
+     * GET /api/pokemons?search=&type=&region=&generation=&with_megas=&per_page=&page=
      * Lista paginada, com busca por nome e filtros por tipo/região/geração.
+     * Megas só aparecem com with_megas=1 (montador de times), logo depois
+     * da forma base.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Pokemon::query()->orderBy('pokedex_number');
+        $query = Pokemon::query()->orderBy('pokedex_number')->orderBy('id');
+
+        if (! $request->boolean('with_megas')) {
+            $query->whereNull('base_pokemon_id');
+        }
 
         if ($user = $request->user()) {
             $query->with(['favoritedBy' => fn ($q) => $q->where('users.id', $user->id)]);
@@ -63,6 +69,8 @@ class PokemonController extends Controller
         // (TM, tutor, egg...) fica em learnset(), usado no montador de times.
         $pokemon->load([
             'abilities',
+            'basePokemon.megas',
+            'megas',
             'moves' => fn ($q) => $q->wherePivot('learn_method', 'level-up'),
         ]);
 

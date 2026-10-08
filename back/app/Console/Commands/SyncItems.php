@@ -17,9 +17,8 @@ class SyncItems extends Command
 
     /**
      * Categorias da PokeAPI com itens que fazem sentido segurar num time
-     * competitivo. Ficam de fora itens de cura/pokébolas/TMs e também as
-     * mega stones e z-crystals, já que a base local não tem as formas
-     * mega/alternativas dos pokémons.
+     * competitivo. Ficam de fora itens de cura/pokébolas/TMs e os
+     * z-crystals.
      */
     private const CATEGORIES = [
         'held-items',        // Leftovers, Focus Sash, Life Orb...
@@ -32,6 +31,7 @@ class SyncItems extends Command
         'in-a-pinch',        // Liechi Berry, Salac Berry...
         'picky-healing',     // Figy Berry, Wiki Berry...
         'type-protection',   // Occa Berry, Yache Berry...
+        'mega-stones',       // Charizardite X... (ver vgc.mega_stones)
     ];
 
     public function handle(PokeApiService $service): int

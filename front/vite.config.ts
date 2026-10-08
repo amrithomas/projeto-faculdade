@@ -8,5 +8,7 @@ export default defineConfig({
     host: true, // permite acesso de fora do container Docker
     port: 5173,
     strictPort: true,
+    // Bind mount do Windows não dispara eventos de arquivo dentro do container.
+    watch: { usePolling: true },
   },
 })

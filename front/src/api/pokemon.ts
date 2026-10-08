@@ -6,6 +6,8 @@ export interface PokemonListParams {
   type?: string;
   region?: string;
   generation?: number;
+  // Inclui as megaevoluções logo depois da forma base.
+  with_megas?: boolean;
   per_page?: number;
   page?: number;
 }

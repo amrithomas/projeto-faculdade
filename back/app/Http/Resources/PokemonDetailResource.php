@@ -51,6 +51,9 @@ class PokemonDetailResource extends JsonResource
                 'pp' => $move->pp,
                 'description' => $move->description,
             ])->values(),
+            'base_pokemon_id' => $this->base_pokemon_id,
+            // Forma base + megas (vazio se a espécie não tem mega).
+            'forms' => $this->forms(),
             // Linha evolutiva completa, agrupada por estágio (não só o elo
             // anterior/seguinte a este pokémon) — ver Pokemon::evolutionFamily().
             'evolution_family' => collect($this->evolutionFamily())
@@ -63,6 +66,25 @@ class PokemonDetailResource extends JsonResource
                 ])->values())
                 ->values(),
         ];
+    }
+
+    private function forms(): array
+    {
+        $base = $this->basePokemon ?? $this->resource;
+
+        if ($base->megas->isEmpty()) {
+            return [];
+        }
+
+        return collect([$base])->merge($base->megas)
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'sprite_url' => $p->sprite_url,
+                'types' => $p->types,
+            ])
+            ->values()
+            ->all();
     }
 
     /**

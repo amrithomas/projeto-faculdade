@@ -1,1 +1,24 @@
-/* Estilos globais agora vêm do MUI (ThemeProvider + CssBaseline em main.tsx). */
+/* Tema/cores vêm do MUI (main.tsx). Aqui ficam só as animações reutilizadas. */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(.6); }
+  70% { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.page { animation: fade-up .35s ease-out; }
+.pop-in { animation: pop-in .35s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

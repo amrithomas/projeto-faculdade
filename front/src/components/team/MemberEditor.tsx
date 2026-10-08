@@ -18,6 +18,7 @@ import {
   calcStat,
   formatName,
   natureLabel,
+  requiredMegaStone,
   totalStatPoints,
 } from '../../utils/vgc';
 import { TypeBadge } from '../TypeBadge';
@@ -90,6 +91,7 @@ export function MemberEditor({
   const usedPoints = totalStatPoints(member.stat_points);
   const remainingPoints = rules.stat_points.total - usedPoints;
   const selectedItem = items.find((item) => item.id === member.item_id) ?? null;
+  const megaStone = requiredMegaStone(member.pokemon.name, rules, items);
 
   function fieldErrors(prefix: string): string[] {
     return Object.entries(errors)
@@ -189,6 +191,7 @@ export function MemberEditor({
             <Autocomplete
               options={items}
               value={selectedItem}
+              disabled={!!megaStone && selectedItem?.id === megaStone.id}
               onChange={(_, item) => onChange({ ...member, item_id: item?.id ?? null })}
               getOptionLabel={(item) => formatName(item.name)}
               getOptionDisabled={(item) => usedItemIds.includes(item.id)}
@@ -210,9 +213,14 @@ export function MemberEditor({
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Item (opcional)"
+                  label={megaStone ? 'Pedra de megaevolução' : 'Item (opcional)'}
                   error={fieldErrors('item_id').length > 0}
-                  helperText={fieldErrors('item_id')[0] ?? selectedItem?.description ?? 'Item Clause: cada item só pode aparecer uma vez no time.'}
+                  helperText={
+                    fieldErrors('item_id')[0] ??
+                    (megaStone
+                      ? 'Megas seguram obrigatoriamente a sua pedra.'
+                      : (selectedItem?.description ?? 'Item Clause: cada item só pode aparecer uma vez no time.'))
+                  }
                 />
               )}
             />

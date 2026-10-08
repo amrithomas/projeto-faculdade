@@ -90,7 +90,7 @@ Não é necessária a instalação local de PHP, Composer, Node.js ou MySQL — 
 
    - **Sincronizando com a PokéAPI** (execução única; pode levar alguns minutos):
      ```
-     docker compose exec app php artisan pokedex:sync --from=1 --limit=898
+     docker compose exec app php artisan pokedex:sync --from=1 --limit=1025
      ```
      O parâmetro `--limit` define o número de registros sincronizados. Para uma execução mais rápida, restrita à primeira geração, utilizar `--limit=151`.
 

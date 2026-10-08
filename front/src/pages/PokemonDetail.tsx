@@ -237,6 +237,46 @@ export function PokemonDetail() {
         </Box>
 
         <Box sx={{ px: 3, pb: 3 }}>
+          {pokemon.forms.length > 0 && (
+            <Box mb={3}>
+              <Typography variant="overline" color="text.secondary">
+                Megaevoluções
+              </Typography>
+              <Stack direction="row" spacing={1.5} mt={1} flexWrap="wrap" useFlexGap>
+                {pokemon.forms.map((form) => (
+                  <Paper
+                    key={form.id}
+                    component={Link}
+                    to={`/pokemon/${form.id}`}
+                    variant="outlined"
+                    sx={{
+                      p: 1.5,
+                      width: 140,
+                      textAlign: 'center',
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      borderWidth: 2,
+                      borderColor: form.id === pokemon.id ? 'primary.main' : undefined,
+                      transition: 'transform .15s',
+                      '&:hover': { transform: 'translateY(-3px)' },
+                    }}
+                  >
+                    {form.sprite_url && (
+                      <Box component="img" src={form.sprite_url} alt="" sx={{ width: 80, height: 80 }} />
+                    )}
+                    <Typography variant="body2" fontWeight={700} textTransform="capitalize">
+                      {form.name.replace(/-/g, ' ')}
+                    </Typography>
+                    <Stack direction="row" spacing={0.5} justifyContent="center" mt={0.5}>
+                      {form.types.map((type) => (
+                        <TypeBadge key={type} type={type} />
+                      ))}
+                    </Stack>
+                  </Paper>
+                ))}
+              </Stack>
+            </Box>
+          )}
           <EvolutionChain stages={pokemon.evolution_family} currentId={pokemon.id} />
           <MovesTable moves={pokemon.moves} />
         </Box>

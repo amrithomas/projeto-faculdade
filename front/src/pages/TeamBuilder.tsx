@@ -24,7 +24,8 @@ import type { Item, Team, TeamPayload, VgcRules } from '../types/team';
 import type { PokemonSummary } from '../types/pokemon';
 import { PokemonPicker } from '../components/team/PokemonPicker';
 import { MemberEditor, type MemberDraft } from '../components/team/MemberEditor';
-import { emptyStatPoints, formatName, totalStatPoints } from '../utils/vgc';
+import { TeamCoverage } from '../components/team/TeamCoverage';
+import { emptyStatPoints, formatName, requiredMegaStone, totalStatPoints } from '../utils/vgc';
 
 type FieldErrors = Record<string, string[]>;
 
@@ -167,7 +168,7 @@ export function TeamBuilder() {
       key: nextKey(),
       pokemon,
       ability_id: learnset?.abilities[0]?.id ?? null,
-      item_id: null,
+      item_id: requiredMegaStone(pokemon.name, rules, items)?.id ?? null,
       nature: Object.keys(rules.natures)[0],
       stat_points: emptyStatPoints(),
       move_ids: padMoves([], rules.max_moves),
@@ -333,12 +334,15 @@ export function TeamBuilder() {
               return (
                 <ButtonBase
                   key={member.key}
+                  className="pop-in"
                   onClick={() => setSelected(index)}
                   sx={{
+                    transition: 'transform .15s, border-color .15s',
+                    '&:hover': { transform: 'translateY(-3px)' },
                     borderRadius: 1,
                     border: 2,
                     borderColor: hasErrors ? 'error.main' : index === selected ? 'primary.main' : 'divider',
-                    bgcolor: index === selected ? 'action.selected' : 'grey.50',
+                    bgcolor: index === selected ? 'action.selected' : 'background.paper',
                     aspectRatio: '1',
                     flexDirection: 'column',
                     position: 'relative',
@@ -381,22 +385,25 @@ export function TeamBuilder() {
           )}
 
           {current ? (
-            <MemberEditor
-              key={current.key}
-              member={current}
-              rules={rules}
-              items={items}
-              usedItemIds={members
-                .filter((_, i) => i !== selected)
-                .map((m) => m.item_id)
-                .filter((x): x is number => x !== null)}
-              errors={memberErrors(selected)}
-              onChange={(member) => updateMember(selected, member)}
-              onRemove={() => removeMember(selected)}
-            />
+            <Box key={current.key} className="page">
+              <MemberEditor
+                member={current}
+                rules={rules}
+                items={items}
+                usedItemIds={members
+                  .filter((_, i) => i !== selected)
+                  .map((m) => m.item_id)
+                  .filter((x): x is number => x !== null)}
+                errors={memberErrors(selected)}
+                onChange={(member) => updateMember(selected, member)}
+                onRemove={() => removeMember(selected)}
+              />
+            </Box>
           ) : (
             <Alert severity="info">Busque um pokémon acima para começar a montar o time.</Alert>
           )}
+
+          <TeamCoverage team={members.map((m) => m.pokemon)} rules={rules} />
         </Stack>
 
         {/* Checklist de regras */}

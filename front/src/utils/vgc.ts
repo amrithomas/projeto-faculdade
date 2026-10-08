@@ -1,5 +1,5 @@
 import type { PokemonSummary } from '../types/pokemon';
-import type { Nature, StatName, StatPoints, VgcRules } from '../types/team';
+import type { Item, Nature, StatName, StatPoints, VgcRules } from '../types/team';
 
 export const STAT_SHORT_LABELS: Record<StatName, string> = {
   hp: 'PS',
@@ -57,6 +57,34 @@ export function calcStat(
   if (nature?.decreased === stat) multiplier = 90;
 
   return Math.floor(((core + 5 + statPoints) * multiplier) / 100);
+}
+
+/**
+ * Multiplicador de dano que um pokémon com `defenderTypes` recebe de um
+ * golpe do tipo `attackType` (mesma conta do TypeEffectivenessService do back).
+ */
+export function damageMultiplier(
+  attackType: string,
+  defenderTypes: string[],
+  chart: VgcRules['type_chart'],
+): number {
+  return defenderTypes.reduce((acc, type) => {
+    const rel = chart[type];
+    if (!rel) return acc;
+    if (rel.no_damage_from.includes(attackType)) return 0;
+    if (rel.double_damage_from.includes(attackType)) return acc * 2;
+    if (rel.half_damage_from.includes(attackType)) return acc * 0.5;
+    return acc;
+  }, 1);
+}
+
+/**
+ * Pedra que a mega é obrigada a segurar (null se não for mega, ou se a
+ * pedra não estiver na lista de itens). Espelha VgcTeamValidator::checkMegaStone.
+ */
+export function requiredMegaStone(pokemonName: string, rules: VgcRules, items: Item[]): Item | null {
+  const stone = rules.mega_stones[pokemonName];
+  return stone ? (items.find((item) => item.name === stone) ?? null) : null;
 }
 
 export function natureLabel(name: string, nature: Nature): string {

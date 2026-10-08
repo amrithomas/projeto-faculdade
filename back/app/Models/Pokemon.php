@@ -14,6 +14,7 @@ class Pokemon extends Model
 
     protected $fillable = [
         'pokedex_number',
+        'base_pokemon_id',
         'generation',
         'region',
         'regional_dex_number',
@@ -69,11 +70,26 @@ class Pokemon extends Model
     }
 
     /**
+     * Forma base de uma megaevolução (null pra pokémons comuns).
+     */
+    public function basePokemon(): BelongsTo
+    {
+        return $this->belongsTo(Pokemon::class, 'base_pokemon_id');
+    }
+
+    public function megas(): HasMany
+    {
+        return $this->hasMany(Pokemon::class, 'base_pokemon_id')->orderBy('id');
+    }
+
+    /**
      * O pokémon do qual este evolui diretamente (pré-evolução), se houver.
+     * Só formas base: megas dividem o número da dex com elas.
      */
     public function preEvolution(): BelongsTo
     {
-        return $this->belongsTo(Pokemon::class, 'evolves_from_pokedex_number', 'pokedex_number');
+        return $this->belongsTo(Pokemon::class, 'evolves_from_pokedex_number', 'pokedex_number')
+            ->whereNull('base_pokemon_id');
     }
 
     /**
@@ -82,7 +98,8 @@ class Pokemon extends Model
      */
     public function evolutions(): HasMany
     {
-        return $this->hasMany(Pokemon::class, 'evolves_from_pokedex_number', 'pokedex_number');
+        return $this->hasMany(Pokemon::class, 'evolves_from_pokedex_number', 'pokedex_number')
+            ->whereNull('base_pokemon_id');
     }
 
     /**

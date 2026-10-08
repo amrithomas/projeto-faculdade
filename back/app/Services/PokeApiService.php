@@ -20,10 +20,12 @@ class PokeApiService
      * Busca um pokémon pelo número da pokedex nacional. Devolve os campos
      * básicos já normalizados, além das listas cruas de habilidades e dos
      * golpes aprendidos por level-up, pra quem chamar processar à parte.
+     * Também aceita o nome de uma forma (ex: "charizard-mega-x"); aí o
+     * `pokedex_number` volta com o id interno da forma (10034), não o da dex.
      */
-    public function fetchPokemon(int $pokedexNumber): ?array
+    public function fetchPokemon(int|string $pokedexNumberOrName): ?array
     {
-        $response = $this->get("/pokemon/{$pokedexNumber}");
+        $response = $this->get("/pokemon/{$pokedexNumberOrName}");
 
         if ($response === null) {
             return null;
@@ -129,6 +131,12 @@ class PokeApiService
             'gender_rate' => $response['gender_rate'] ?? null,
             'is_legendary' => (bool) ($response['is_legendary'] ?? false),
             'is_mythical' => (bool) ($response['is_mythical'] ?? false),
+            // Nomes das formas mega (ex: charizard-mega-x, charizard-mega-y).
+            'megas' => collect($response['varieties'] ?? [])
+                ->pluck('pokemon.name')
+                ->filter(fn (string $name) => str_contains($name, '-mega'))
+                ->values()
+                ->all(),
         ];
     }
 
