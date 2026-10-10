@@ -22,5 +22,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Testes rodam com `node --test` (tipos do Node, não do Vite).
+  "exclude": ["src/**/*.test.ts"]
 }

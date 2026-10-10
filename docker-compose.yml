@@ -63,6 +63,21 @@ services:
     networks:
       - pokedex
 
+  # Simulador de batalha (Pokémon Showdown). Sem porta publicada: só o
+  # Laravel fala com ele, pela rede interna.
+  battle:
+    build:
+      context: ./battle
+      dockerfile: Dockerfile
+    container_name: pokedex_battle
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes:
+      - ./battle:/app
+      - pokedex_battle_node_modules:/app/node_modules
+    networks:
+      - pokedex
+
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: pokedex_phpmyadmin
@@ -85,3 +100,4 @@ volumes:
   pokedex_mysql_data:
   pokedex_vendor:
   pokedex_front_node_modules:
+  pokedex_battle_node_modules:

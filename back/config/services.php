@@ -28,6 +28,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Simulador de batalha (container "battle" do docker-compose).
+    'battle' => [
+        'url' => env('BATTLE_SERVICE_URL', 'http://battle:3000'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

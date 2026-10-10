@@ -10,6 +10,7 @@ import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
 import { Teams } from './pages/Teams';
 import { TeamBuilder } from './pages/TeamBuilder';
+import { Battle } from './pages/Battle';
 import { AuthMenu } from './components/AuthMenu';
 
 function App() {
@@ -44,6 +45,8 @@ function App() {
           <Route path="/teams" element={<Teams />} />
           <Route path="/teams/new" element={<TeamBuilder />} />
           <Route path="/teams/:id" element={<TeamBuilder />} />
+          <Route path="/battles/new" element={<Battle />} />
+          <Route path="/battles/:id" element={<Battle />} />
         </Routes>
       </Box>
     </Box>

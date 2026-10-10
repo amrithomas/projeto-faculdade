@@ -1,0 +1,107 @@
+{
+  "easy": [
+    {
+      "name": "Turma da Rota 1",
+      "members": [
+        { "pokemon": "pidgeotto", "ability": "keen-eye", "item": null, "nature": "hardy", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["gust", "quick-attack", "sand-attack", "wing-attack"] },
+        { "pokemon": "raticate", "ability": "guts", "item": null, "nature": "docile", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["hyper-fang", "quick-attack", "tail-whip", "bite"] },
+        { "pokemon": "butterfree", "ability": "compound-eyes", "item": null, "nature": "serious", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["confusion", "gust", "sleep-powder", "psybeam"] },
+        { "pokemon": "beedrill", "ability": "swarm", "item": null, "nature": "bashful", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["poison-sting", "fury-attack", "pin-missile", "agility"] },
+        { "pokemon": "arbok", "ability": "intimidate", "item": null, "nature": "quirky", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["bite", "wrap", "poison-sting", "glare"] },
+        { "pokemon": "sandslash", "ability": "sand-veil", "item": null, "nature": "hardy", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["slash", "defense-curl", "sand-attack", "swift"] }
+      ]
+    },
+    {
+      "name": "Acampamento",
+      "members": [
+        { "pokemon": "wigglytuff", "ability": "cute-charm", "item": null, "nature": "hardy", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["pound", "sing", "double-slap", "body-slam"] },
+        { "pokemon": "psyduck", "ability": "damp", "item": null, "nature": "docile", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["scratch", "water-gun", "confusion", "tail-whip"] },
+        { "pokemon": "growlithe", "ability": "intimidate", "item": null, "nature": "serious", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["bite", "ember", "leer", "take-down"] },
+        { "pokemon": "machop", "ability": "guts", "item": null, "nature": "bashful", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["low-kick", "leer", "karate-chop", "focus-energy"] },
+        { "pokemon": "bellsprout", "ability": "chlorophyll", "item": null, "nature": "quirky", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["vine-whip", "wrap", "sleep-powder", "acid"] },
+        { "pokemon": "geodude", "ability": "sturdy", "item": null, "nature": "hardy", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["tackle", "rock-throw", "defense-curl", "magnitude"] }
+      ]
+    },
+    {
+      "name": "Cidade Grande",
+      "members": [
+        { "pokemon": "furret", "ability": "run-away", "item": null, "nature": "hardy", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["scratch", "quick-attack", "defense-curl", "slam"] },
+        { "pokemon": "ledian", "ability": "swarm", "item": null, "nature": "docile", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["comet-punch", "supersonic", "swift", "light-screen"] },
+        { "pokemon": "ariados", "ability": "swarm", "item": null, "nature": "serious", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["poison-sting", "string-shot", "night-shade", "leech-life"] },
+        { "pokemon": "noctowl", "ability": "insomnia", "item": null, "nature": "bashful", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["peck", "hypnosis", "confusion", "reflect"] },
+        { "pokemon": "quagsire", "ability": "damp", "item": null, "nature": "quirky", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["water-gun", "mud-shot", "slam", "amnesia"] },
+        { "pokemon": "sunflora", "ability": "chlorophyll", "item": null, "nature": "hardy", "stat_points": [11, 11, 11, 11, 11, 11], "moves": ["absorb", "razor-leaf", "growth", "petal-dance"] }
+      ]
+    }
+  ],
+  "medium": [
+    {
+      "name": "Equilíbrio",
+      "members": [
+        { "pokemon": "garchomp", "ability": "rough-skin", "item": "life-orb", "nature": "jolly", "stat_points": [2, 32, 0, 0, 0, 32], "moves": ["earthquake", "dragon-claw", "rock-slide", "protect"] },
+        { "pokemon": "togekiss", "ability": "serene-grace", "item": "sitrus-berry", "nature": "modest", "stat_points": [32, 0, 2, 32, 0, 0], "moves": ["air-slash", "dazzling-gleam", "protect", "follow-me"] },
+        { "pokemon": "milotic", "ability": "competitive", "item": "leftovers", "nature": "bold", "stat_points": [32, 0, 32, 2, 0, 0], "moves": ["scald", "ice-beam", "recover", "protect"] },
+        { "pokemon": "arcanine", "ability": "intimidate", "item": "assault-vest", "nature": "adamant", "stat_points": [32, 32, 0, 0, 2, 0], "moves": ["flare-blitz", "extreme-speed", "crunch", "wild-charge"] },
+        { "pokemon": "metagross", "ability": "clear-body", "item": "choice-band", "nature": "adamant", "stat_points": [2, 32, 0, 0, 0, 32], "moves": ["meteor-mash", "zen-headbutt", "bullet-punch", "earthquake"] },
+        { "pokemon": "hydreigon", "ability": "levitate", "item": "choice-specs", "nature": "modest", "stat_points": [2, 0, 0, 32, 0, 32], "moves": ["dark-pulse", "draco-meteor", "flamethrower", "earth-power"] }
+      ]
+    },
+    {
+      "name": "Chuva",
+      "members": [
+        { "pokemon": "pelipper", "ability": "drizzle", "item": "damp-rock", "nature": "bold", "stat_points": [32, 0, 32, 2, 0, 0], "moves": ["scald", "hurricane", "protect", "tailwind"] },
+        { "pokemon": "kingdra", "ability": "swift-swim", "item": "choice-specs", "nature": "modest", "stat_points": [2, 0, 0, 32, 0, 32], "moves": ["muddy-water", "draco-meteor", "hydro-pump", "ice-beam"] },
+        { "pokemon": "ludicolo", "ability": "swift-swim", "item": "life-orb", "nature": "modest", "stat_points": [2, 0, 0, 32, 0, 32], "moves": ["hydro-pump", "giga-drain", "fake-out", "protect"] },
+        { "pokemon": "ferrothorn", "ability": "iron-barbs", "item": "leftovers", "nature": "relaxed", "stat_points": [32, 32, 2, 0, 0, 0], "moves": ["gyro-ball", "power-whip", "body-press", "protect"] },
+        { "pokemon": "amoonguss", "ability": "regenerator", "item": "rocky-helmet", "nature": "bold", "stat_points": [32, 0, 32, 0, 2, 0], "moves": ["spore", "rage-powder", "pollen-puff", "protect"] },
+        { "pokemon": "raichu", "ability": "lightning-rod", "item": "focus-sash", "nature": "timid", "stat_points": [2, 0, 0, 32, 0, 32], "moves": ["thunderbolt", "fake-out", "protect", "nuzzle"] }
+      ]
+    },
+    {
+      "name": "Sol",
+      "members": [
+        { "pokemon": "torkoal", "ability": "drought", "item": "charcoal", "nature": "quiet", "stat_points": [32, 0, 0, 32, 2, 0], "moves": ["eruption", "heat-wave", "earth-power", "protect"] },
+        { "pokemon": "venusaur", "ability": "chlorophyll", "item": "life-orb", "nature": "modest", "stat_points": [2, 0, 0, 32, 0, 32], "moves": ["solar-beam", "sludge-bomb", "sleep-powder", "protect"] },
+        { "pokemon": "incineroar", "ability": "intimidate", "item": "sitrus-berry", "nature": "careful", "stat_points": [32, 0, 2, 0, 32, 0], "moves": ["fake-out", "flare-blitz", "parting-shot", "knock-off"] },
+        { "pokemon": "dragonite", "ability": "multiscale", "item": "weakness-policy", "nature": "adamant", "stat_points": [2, 32, 0, 0, 0, 32], "moves": ["extreme-speed", "dragon-claw", "fire-punch", "protect"] },
+        { "pokemon": "whimsicott", "ability": "prankster", "item": "focus-sash", "nature": "timid", "stat_points": [32, 0, 0, 2, 0, 32], "moves": ["tailwind", "moonblast", "encore", "protect"] },
+        { "pokemon": "rhyperior", "ability": "solid-rock", "item": "expert-belt", "nature": "adamant", "stat_points": [32, 32, 2, 0, 0, 0], "moves": ["high-horsepower", "rock-slide", "protect", "ice-punch"] }
+      ]
+    }
+  ],
+  "hard": [
+    {
+      "name": "Mega Sol Ofensivo",
+      "members": [
+        { "pokemon": "charizard-mega-y", "ability": "drought", "item": "charizardite-y", "nature": "timid", "stat_points": [2, 0, 0, 32, 0, 32], "moves": ["heat-wave", "solar-beam", "protect", "weather-ball"] },
+        { "pokemon": "flutter-mane", "ability": "protosynthesis", "item": "booster-energy", "nature": "timid", "stat_points": [2, 0, 0, 32, 0, 32], "moves": ["moonblast", "shadow-ball", "dazzling-gleam", "protect"] },
+        { "pokemon": "incineroar", "ability": "intimidate", "item": "sitrus-berry", "nature": "careful", "stat_points": [32, 2, 0, 0, 32, 0], "moves": ["fake-out", "flare-blitz", "parting-shot", "knock-off"] },
+        { "pokemon": "kingambit", "ability": "defiant", "item": "black-glasses", "nature": "adamant", "stat_points": [32, 32, 0, 0, 2, 0], "moves": ["kowtow-cleave", "sucker-punch", "iron-head", "protect"] },
+        { "pokemon": "gholdengo", "ability": "good-as-gold", "item": "choice-specs", "nature": "modest", "stat_points": [32, 0, 0, 32, 2, 0], "moves": ["make-it-rain", "shadow-ball", "trick", "power-gem"] },
+        { "pokemon": "amoonguss", "ability": "regenerator", "item": "rocky-helmet", "nature": "relaxed", "stat_points": [32, 0, 32, 0, 2, 0], "moves": ["spore", "rage-powder", "pollen-puff", "protect"] }
+      ]
+    },
+    {
+      "name": "Kyogre na Chuva",
+      "members": [
+        { "pokemon": "kyogre", "ability": "drizzle", "item": "mystic-water", "nature": "modest", "stat_points": [2, 0, 0, 32, 0, 32], "moves": ["water-spout", "origin-pulse", "ice-beam", "protect"] },
+        { "pokemon": "tornadus-incarnate", "ability": "prankster", "item": "covert-cloak", "nature": "timid", "stat_points": [32, 0, 0, 2, 0, 32], "moves": ["tailwind", "hurricane", "rain-dance", "protect"] },
+        { "pokemon": "urshifu-single-strike", "ability": "unseen-fist", "item": "focus-sash", "nature": "jolly", "stat_points": [2, 32, 0, 0, 0, 32], "moves": ["wicked-blow", "close-combat", "sucker-punch", "protect"] },
+        { "pokemon": "rillaboom", "ability": "grassy-surge", "item": "assault-vest", "nature": "adamant", "stat_points": [32, 32, 2, 0, 0, 0], "moves": ["fake-out", "grassy-glide", "wood-hammer", "u-turn"] },
+        { "pokemon": "archaludon", "ability": "stamina", "item": "leftovers", "nature": "modest", "stat_points": [32, 0, 0, 32, 2, 0], "moves": ["electro-shot", "flash-cannon", "draco-meteor", "protect"] },
+        { "pokemon": "iron-hands", "ability": "quark-drive", "item": "clear-amulet", "nature": "adamant", "stat_points": [32, 32, 2, 0, 0, 0], "moves": ["fake-out", "drain-punch", "wild-charge", "heavy-slam"] }
+      ]
+    },
+    {
+      "name": "Trick Room Pesado",
+      "members": [
+        { "pokemon": "farigiraf", "ability": "armor-tail", "item": "safety-goggles", "nature": "sassy", "stat_points": [32, 0, 2, 0, 32, 0], "moves": ["trick-room", "hyper-voice", "psychic", "protect"] },
+        { "pokemon": "ursaluna", "ability": "guts", "item": "flame-orb", "nature": "brave", "stat_points": [32, 32, 2, 0, 0, 0], "moves": ["facade", "headlong-rush", "protect", "earthquake"] },
+        { "pokemon": "torkoal", "ability": "drought", "item": "heat-rock", "nature": "quiet", "stat_points": [32, 0, 0, 32, 2, 0], "moves": ["eruption", "heat-wave", "earth-power", "protect"] },
+        { "pokemon": "kangaskhan-mega", "ability": "parental-bond", "item": "kangaskhanite", "nature": "adamant", "stat_points": [32, 32, 2, 0, 0, 0], "moves": ["fake-out", "double-edge", "sucker-punch", "protect"] },
+        { "pokemon": "hatterene", "ability": "magic-bounce", "item": "life-orb", "nature": "quiet", "stat_points": [32, 0, 0, 32, 2, 0], "moves": ["expanding-force", "dazzling-gleam", "trick-room", "protect"] },
+        { "pokemon": "amoonguss", "ability": "regenerator", "item": "sitrus-berry", "nature": "relaxed", "stat_points": [32, 0, 32, 0, 2, 0], "moves": ["spore", "rage-powder", "pollen-puff", "protect"] }
+      ]
+    }
+  ]
+}

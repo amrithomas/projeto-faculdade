@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TeamRequest;
 use App\Http\Resources\TeamResource;
 use App\Models\Team;
-use App\Models\TeamMember;
 use App\Services\VgcTeamValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,7 +53,7 @@ class TeamController extends Controller
 
         $team = DB::transaction(function () use ($request, $members) {
             $team = $request->user()->teams()->create(['name' => $request->validated('name')]);
-            $this->saveMembers($team, $members);
+            $team->replaceMembers($members);
 
             return $team;
         });
@@ -77,7 +76,7 @@ class TeamController extends Controller
         DB::transaction(function () use ($request, $team, $members) {
             $team->update(['name' => $request->validated('name')]);
             $team->touch();
-            $this->saveMembers($team, $members);
+            $team->replaceMembers($members);
         });
 
         return new TeamResource($team->load(self::RELATIONS));
@@ -92,27 +91,5 @@ class TeamController extends Controller
         $team->delete();
 
         return response()->json(['message' => 'Time excluído.']);
-    }
-
-    private function saveMembers(Team $team, array $members): void
-    {
-        TeamMember::where('team_id', $team->id)->delete();
-
-        foreach ($members as $i => $memberData) {
-            $member = $team->members()->create([
-                'slot' => $i + 1,
-                'pokemon_id' => $memberData['pokemon_id'],
-                'ability_id' => $memberData['ability_id'],
-                'item_id' => $memberData['item_id'],
-                'nature' => $memberData['nature'],
-                'stat_points' => $memberData['stat_points'],
-            ]);
-
-            $member->moves()->sync(
-                collect($memberData['move_ids'])
-                    ->mapWithKeys(fn ($moveId, $j) => [$moveId => ['slot' => $j + 1]])
-                    ->all()
-            );
-        }
     }
 }

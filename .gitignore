@@ -10,6 +10,8 @@
 # as entradas abaixo são redundância proposital.
 /back/vendor
 /front/node_modules
+/battle/node_modules
+/battle/package-lock.json
 
 # Build/artefatos gerados
 /front/dist

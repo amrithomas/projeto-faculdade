@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type UIEvent, useEffect, useRef, useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -9,6 +9,8 @@ import type { PokemonSummary } from '../../types/pokemon';
 import type { VgcRules } from '../../types/team';
 import { banReason, formatName } from '../../utils/vgc';
 import { TypeBadge } from '../TypeBadge';
+
+const PER_PAGE = 24;
 
 /**
  * Busca de pokémon pelo nome (na API, com debounce), usada pra adicionar
@@ -31,14 +33,22 @@ export function PokemonPicker({
   const [input, setInput] = useState('');
   const [options, setOptions] = useState<PokemonSummary[]>([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  // Busca atual, pra descartar uma página que chegou depois de outra digitação.
+  const inputRef = useRef(input);
 
+  // Busca nova: volta pra página 1 (com debounce enquanto digita).
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     const timer = setTimeout(() => {
-      fetchPokemons({ search: input || undefined, with_megas: true, per_page: 24 })
+      fetchPokemons({ search: input || undefined, with_megas: true, per_page: PER_PAGE, page: 1 })
         .then((res) => {
-          if (!cancelled) setOptions(res.data);
+          if (cancelled) return;
+          setOptions(res.data);
+          setPage(1);
+          setLastPage(res.meta.last_page);
         })
         .catch(() => {
           if (!cancelled) setOptions([]);
@@ -53,6 +63,24 @@ export function PokemonPicker({
       clearTimeout(timer);
     };
   }, [input]);
+
+  // Rolagem infinita: perto do fim da lista, carrega a próxima página.
+  function loadMore(event: UIEvent<HTMLElement>) {
+    const list = event.currentTarget;
+    if (loading || page >= lastPage || list.scrollTop + list.clientHeight < list.scrollHeight - 80) return;
+
+    const searchAtRequest = input;
+    setLoading(true);
+    fetchPokemons({ search: input || undefined, with_megas: true, per_page: PER_PAGE, page: page + 1 })
+      .then((res) => {
+        // Se o usuário digitou outra coisa nesse meio tempo, a página é de outra busca.
+        if (searchAtRequest !== inputRef.current) return;
+        setOptions((prev) => [...prev, ...res.data]);
+        setPage(res.meta.current_page);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }
 
   function disabledReason(pokemon: PokemonSummary): string | null {
     if (takenPokedexNumbers.includes(pokemon.pokedex_number)) {
@@ -70,12 +98,14 @@ export function PokemonPicker({
       onInputChange={(_, value, reason) => {
         // Só guarda o que o usuário digitou; depois de escolher um pokémon
         // (ou sair do campo), limpa em vez de deixar o nome lá.
-        setInput(reason === 'input' ? value : '');
+        inputRef.current = reason === 'input' ? value : '';
+        setInput(inputRef.current);
       }}
       onChange={(_, pokemon) => {
         if (pokemon) onSelect(pokemon);
       }}
       filterOptions={(x) => x}
+      slotProps={{ listbox: { onScroll: loadMore } }}
       getOptionLabel={(p) => p.name}
       getOptionDisabled={(p) => disabledReason(p) !== null}
       isOptionEqualToValue={(a, b) => a.id === b.id}

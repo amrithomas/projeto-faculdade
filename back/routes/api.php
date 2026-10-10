@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BattleController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\PokemonController;
 use App\Http\Controllers\Api\TeamController;
@@ -27,4 +28,8 @@ Route::middleware('auth.required')->group(function () {
     Route::post('/pokemons/{pokemon}/favorite', [FavoriteController::class, 'toggle']);
 
     Route::apiResource('teams', TeamController::class);
+
+    Route::post('/battles', [BattleController::class, 'store']);
+    Route::get('/battles/{battle}', [BattleController::class, 'show']);
+    Route::post('/battles/{battle}/choice', [BattleController::class, 'choice']);
 });
